@@ -3,13 +3,13 @@
 using System.Reflection;
 using SimpleKSAInjector;
 
-const string KsaPath = "./ksa.exe"; // TODO: When KSA releases
+const string KsaPath = "./ksa.dll"; // TODO: When KSA releases
 var assemblies = new List<Assembly>();
 foreach (var file in Directory.EnumerateFiles("./mods", "*.dll", SearchOption.AllDirectories))
 {
     try
     {
-        var asm = Assembly.LoadFile(file);
+        var asm = Assembly.LoadFile(Path.GetFullPath(file));
         assemblies.Add(asm);
     }
     catch (Exception e)
@@ -27,7 +27,7 @@ foreach (var mod in assemblies)
     }
 }
 
-var ksa = Assembly.LoadFile(KsaPath);
+var ksa = Assembly.LoadFile(Path.GetFullPath(KsaPath));
 
 foreach (var mod in assemblies)
 {
@@ -37,5 +37,4 @@ foreach (var mod in assemblies)
         method.Invoke(null, []);
     }
 }
-
 ksa.EntryPoint!.Invoke(null,[args]);
